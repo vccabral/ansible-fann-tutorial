@@ -1,0 +1,94 @@
+---
+- hosts: all
+  become: true
+  vars:
+    fann_version: "2.2.0"
+
+  roles:
+     - alban.andrieu.cmake
+
+  tasks: 
+    - name: Install unzip
+      apt: 
+        pkg: unzip
+        state: present
+
+    - name: Install build-essential
+      apt:
+        pkg: build-essential
+        state: present
+
+    - name: unarchive fann download
+      unarchive:
+        src: http://sourceforge.net/projects/fann/files/fann/{{ fann_version }}/FANN-{{ fann_version }}-Source.zip/download
+        dest: /home/vagrant
+        remote_src: yes
+        creates: /home/vagrant/FANN-{{ fann_version }}-Source
+
+    - name: run cmake for fann
+      command: "/usr/bin/cmake ."
+      args:
+        chdir: "/home/vagrant/FANN-{{ fann_version }}-Source/"
+        creates: /home/vagrant/FANN-{{ fann_version }}-Source/Makefile
+      become: yes
+
+    - name: run make for fann
+      make: 
+        chdir: "/home/vagrant/FANN-{{ fann_version }}-Source"
+      become: yes
+
+    - name: run cmake for fann
+      command: "/usr/bin/cmake ."
+      args:
+        chdir: "/home/vagrant/FANN-{{ fann_version }}-Source/"
+      become: yes
+
+    - name: run make install for fann
+      command: "/usr/bin/make . install"
+      args:
+        chdir: "/home/vagrant/FANN-{{ fann_version }}-Source/"
+      become: yes
+
+    - name: create test folder
+      file:
+        path: /home/vagrant/test
+        owner: vagrant
+        group: vagrant
+        mode: 0744
+        state: directory
+
+    - name: test programs
+      template:
+        src: templates/{{ item }}.j2
+        dest: /home/vagrant/test/{{ item }}
+        owner: vagrant
+        group: vagrant
+        mode: 0744
+      with_items:
+        - "main.c"
+        - "trained.c"
+        - "xor.data"
+
+    - name: run ldconfig
+      command: "ldconfig"
+      become: yes
+
+    - name: compile program to generate net
+      command: "/usr/bin/gcc main.c -lfann -lm -o main"
+      args:
+        chdir: "/home/vagrant/test/"
+
+    - name: compile program to run trained net
+      command: "/usr/bin/gcc trained.c -lfann -lm -o trained"
+      args:
+        chdir: "/home/vagrant/test/"
+
+    - name: run the training
+      command: "./main"
+      args:
+        chdir: "/home/vagrant/test/"
+
+    - name: run the network 
+      command: "./trained"
+      args:
+        chdir: "/home/vagrant/test/"
