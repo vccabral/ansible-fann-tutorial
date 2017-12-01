@@ -7,5 +7,7 @@ A ansiblized way to understand how FANN works on the hello world demo training t
 # using this demo
 
 `
-vagrant up
+$ git clone git@github.com:vccabral/ansible-fann-tutorial.git
+$ cd ansible-fann-tutorial
+$ vagrant up
 `
