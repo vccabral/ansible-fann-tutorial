@@ -1,5 +1,5 @@
 # ansible-fann-tutorial
-A ansiblized way to understand how FANN works by running the cononcial fann demo 'XOR' on a small net.
+A ansiblized way to understand how FANN works by running the canonical fann demo 'XOR' on a small net.
 
 # pre-requisties
  * ansible
