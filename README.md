@@ -3,6 +3,7 @@ A ansiblized way to understand how FANN works on the hello world demo training t
 
 # pre-requisties
  * ansible
+ * vagrant
 
 # using this demo
 
