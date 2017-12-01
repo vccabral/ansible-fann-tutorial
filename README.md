@@ -10,5 +10,6 @@ A ansiblized way to understand how FANN works by running the canonical fann demo
 ```
 $ git clone git@github.com:vccabral/ansible-fann-tutorial.git  
 $ cd ansible-fann-tutorial  
-$ vagrant up . 
+$ ansible-galaxy install -r requirements.yml
+$ vagrant up
 ```
