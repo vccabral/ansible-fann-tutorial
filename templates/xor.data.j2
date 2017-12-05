@@ -1,9 +1,3 @@
-4 2 1
--1 -1
--1
--1 1
-1
-1 -1
-1
-1 1
--1
+{{ learning_data|length }} {{ nueron_layers[0] }} {{ nueron_layers[nueron_layers|length-1] }}
+{% for learning_datum in learning_data %}{% for input in learning_datum[0] %}{{ input }} {% endfor %}
+{% for output in learning_datum[1] %}{{ output }} {% endfor %}{{ "\n" }}{% endfor %}

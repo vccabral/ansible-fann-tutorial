@@ -4,15 +4,18 @@
 int main()
 {
     fann_type *calc_out;
-    fann_type input[2];
+    fann_type input[{{ nueron_layers[0] }}];
 
     struct fann *ann = fann_create_from_file("xor_float.net");
 
-    input[0] = -1;
-    input[1] = 1;
-    calc_out = fann_run(ann, input);
+    {% for learning_datum in learning_data %}
+        {% for input in learning_datum[0] %}
+            input[{{ loop.index - 1 }}] = {{ input }} ;
+        {% endfor %}
+        calc_out = fann_run(ann, input);
+        printf("xor test ({% for input in learning_datum[0] %},%f{% endfor %}) -> %f\n"{% for input in learning_datum[0] %}, input[{{ loop.index }}]{% endfor %}, calc_out[0]);
+    {% endfor %}
 
-    printf("xor test (%f,%f) -> %f\n", input[0], input[1], calc_out[0]);
 
     fann_destroy(ann);
     return 0;
